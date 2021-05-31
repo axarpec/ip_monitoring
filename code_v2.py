@@ -7,7 +7,7 @@ import time
 def ping(host):
     ping_out = ''
     for ip in host:
-        command = 'ping -c 5 ' + str(ip)
+        command = 'date ; ping -c 5 ' + str(ip)
         response = subprocess.run(command, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, universal_newlines=True)
         #print(response.stdout)
         ping_out = ping_out + '\n' + response.stdout
@@ -17,9 +17,9 @@ def trace(host, proto, port):
     trace_out = ''
     for ip in host:
         if proto == 'tcp':
-            command = 'traceroute -T -p ' + str(port) + ' ' + str(ip) + ' -nn'
+            command = 'date ; traceroute -T -p ' + str(port) + ' ' + str(ip) + ' -nn'
         else:
-            command = 'traceroute -p ' + str(port) + ' ' + str(ip) + ' -nn'
+            command = 'date ; traceroute -p ' + str(port) + ' ' + str(ip) + ' -nn'
         response = subprocess.run(command, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, universal_newlines=True)
         #print(response.stdout)
         trace_out = trace_out + '\n' + response.stdout
@@ -29,9 +29,9 @@ def mtr(host, proto, port):
     mtr_out = ''
     for ip in host:
         if proto == 'tcp':
-            command = 'mtr -T -P ' + str(port)  + ' ' +  str(ip) + ' --report'
+            command = 'date ; mtr -T -P ' + str(port)  + ' ' +  str(ip) + ' --report'
         else:
-            command = 'mtr --udp -P ' + str(port)  + ' ' +  str(ip) + ' --report'
+            command = 'date ; mtr --udp -P ' + str(port)  + ' ' +  str(ip) + ' --report'
         response = subprocess.run(command, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, universal_newlines=True)
         #print(response.stdout)
         mtr_out = mtr_out + '\n' + response.stdout
@@ -76,10 +76,11 @@ mtr_file = input('Please specify the name of the MTR output file : ')
 c = subprocess.run(f'touch {str(directory)}/{str(mtr_file)}.text', shell=True, universal_newlines=True)
 mtr_file = regex.search(c.args)
 #m_file = mtr_file(0)
-
+'''
 # check date from system
 date = subprocess.run('date', shell=True, universal_newlines=True, stdout=subprocess.PIPE)
 date = date.stdout
+'''
 
 # call all the function for XX minutes at xx interval and write the output to the created file
 
@@ -98,17 +99,17 @@ with concurrent.futures.ThreadPoolExecutor() as executor :
 
     for p in concurrent.futures.as_completed(ping_out):
         with open(ping_file.group(0), 'a') as ping_result:
-            ping_result.write(date)
+            #ping_result.write(date)
             ping_result.write(p.result())
 
     for t in concurrent.futures.as_completed(trace_out):
         with open(traceroute_file.group(0), 'a') as trace_result:
-            trace_result.write(date)
+            #trace_result.write(date)
             trace_result.write(t.result())
 
     for m in concurrent.futures.as_completed(mtr_out):
         with open(mtr_file.group(0), 'a') as mtr_result:
-            mtr_result.write(date)
+            #mtr_result.write(date)
             mtr_result.write(m.result())
             
 print(f'check output in following files \n {ping_file.group(0)} \n {traceroute_file.group(0)} \n {mtr_file.group(0)}')
