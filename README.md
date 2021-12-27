@@ -11,4 +11,11 @@ V2 :
 - This script can pull the ping/traceroute/mtr result at the specific interval defined by user.
 - This script is making use of multithreading in order to speedup the process.
 
+V3 :
+- This script is to make it compatible with the linux cronjob setup where one can pass arguments with the script and start monitoring the IP.
+- The interval that the script will run can be managed by the cronjob.
+
+Note : For v3 to run in the linux env, I would recommend to put the sheband as following and make the script executable with chmod.
+#!/usr/bin/env python3
+
 Stay tuned for more updates.
